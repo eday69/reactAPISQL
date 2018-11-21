@@ -1,4 +1,5 @@
 import psycopg2
+import json
 
 def getAllClients():
     allClients = []
@@ -13,5 +14,7 @@ def getAllClients():
 
     cur.close()
     conn.close()
+
+    print(allClients)
 
     return json.dumps(**allClients)
