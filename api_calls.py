@@ -1,37 +1,23 @@
-import psycopg2
 import json
+import os
+from db import Db
 
-def getAllClients():
-    allClients = []
+env = {
+    'dbname': os.getenv('DB_NAME'),
+    'user': os.getenv('USER'),
+    'password': os.getenv('PASSWORD'),
+    'host': os.getenv('HOST'),
+    'port': os.getenv('PORT')
+}
+
+db = Db(env)
+
+def get_all_clients():
     sql = "SELECT * from clients"
-    conn = psycopg2.connect('dbname=evolveu')
-    cur = conn.cursor()
-    cur.execute(sql)
+    data = db.query(sql)
+    return json.dumps(data)
 
-    rows = cur.fetchall()
-    for row in rows:
-        allClients.append({'id': row[0], 'name': row[1]})
-
-    cur.close()
-    conn.close()
-
-    print(allClients)
-
-    return json.dumps(allClients)
-
-
-def getClient(id):
-    allClients = []
-    sql = "SELECT * from clients where id = id"
-    conn = psycopg2.connect('dbname=evolveu')
-    cur = conn.cursor()
-    cur.execute(sql)
-
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
-
-    print({'id': row[0], 'name': row[1]})
-
-    return json.dumps([{'id': row[0], 'name': row[1]}])
-
+def get_client(id):
+    sql = f"SELECT * from clients where client_id = {id}"
+    data = db.query(sql)
+    return json.dumps(data[0])

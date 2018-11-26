@@ -1,32 +1,24 @@
 from flask import Flask
+from dotenv import load_dotenv
+
 import api_calls as ac
+
+# load the environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
-
-# GETs
-# /clients    --- all the clients
 @app.route('/clients')
 def api_getAllClients():
-    # Serve first component
-    return ac.getAllClients() # json object
+    return ac.get_all_clients()
 
-# @app.route('/client/:id')
-# def getClient(id):
-#     # Serve first component
-#     return 'Hello world'
-
-# /sales
-# /invoices
-
-# POSTs
-# /invoice
+@app.route('/client/<int:id>')
+def getClient(id):
+     return ac.get_client(id)
 
 @app.route('/')
 def index():
-    # Serve first component
     return 'Hello world'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
