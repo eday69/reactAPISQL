@@ -1,20 +1,29 @@
 from flask import Flask
+from flask_restful import Api
 import api_calls as ac
+from client import ClientList
+from invoice import InvoiceList, Invoice
 
 app = Flask(__name__)
+app.secret_key = 'evolveu'
+api = Api(app)
 
 
-# GETs
-# /clients    --- all the clients
-@app.route('/clients')
-def api_getAllClients():
-    # Serve first component
-    return ac.getAllClients() # json object
+# api.add_resource(Client, '/item/<string:name>')
+api.add_resource(ClientList, '/clients')
+api.add_resource(InvoiceList, '/invoices')
+api.add_resource(Invoice, '/invoice/<int:client_id>')
 
-# @app.route('/client/:id')
-# def getClient(id):
-#     # Serve first component
-#     return 'Hello world'
+
+# @app.route('/clients')
+# def api_getAllClients():
+#     # Get all clients
+#     return ac.getAllClients()
+
+@app.route('/client/<int:id>')
+def getClient(id):
+    # Serve specific client
+    return ac.getClient(id)  # json object
 
 # /sales
 # /invoices

@@ -4,6 +4,8 @@ import json
 def getAllClients():
     allClients = []
     sql = "SELECT * from clients"
+
+
     conn = psycopg2.connect('dbname=evolveu')
     cur = conn.cursor()
     cur.execute(sql)
@@ -35,3 +37,5 @@ def getClient(id):
 
     return json.dumps([{'id': row[0], 'name': row[1]}])
 
+
+# select sum(total) from invoices where extract(month from date) = 11;
