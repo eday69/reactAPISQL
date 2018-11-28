@@ -10,6 +10,7 @@ pytest = "*"
 "psycopg2-binary" = "*"
 flask-restful = "*"
 python-dotenv = "*"
+flask-cors = "*"
 
 [dev-packages]
 

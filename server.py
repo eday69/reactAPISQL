@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 from client import ClientList, Client
@@ -8,6 +9,7 @@ from invoice import InvoiceList, Invoice
 app = Flask(__name__)
 app.secret_key = 'evolveu'
 api = Api(app)
+CORS(app)
 
 # load the environment variables from .env file
 load_dotenv()
