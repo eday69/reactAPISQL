@@ -1,21 +1,22 @@
+import json
 from flask_restful import Resource
-import psycopg2
+from db import Db
 
 class ClientList(Resource):
+    def __init__(self):
+        self.db = Db()
+
     def get(self):
         sql = "SELECT * from clients"
+        data = self.db.query(sql)
+        return data, 200
 
+class Client(Resource):
+    def __init__(self):
+        self.db = Db()
 
-        conn = psycopg2.connect('dbname=evolveu')
-        cur = conn.cursor()
-        cur.execute(sql)
+    def get(self, id):
+        sql = f"SELECT * from clients where id = {id}"
+        data = self.db.query(sql)
+        return data, 200
 
-        clients = []
-        rows = cur.fetchall()
-        for row in rows:
-            clients.append({'id': row[0], 'name': row[1]})
-
-        cur.close()
-        conn.close()
-
-        return {'clients': clients}

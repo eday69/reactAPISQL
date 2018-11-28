@@ -9,6 +9,7 @@ pytest = "*"
 "psycopg2" = "*"
 "psycopg2-binary" = "*"
 flask-restful = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

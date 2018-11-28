@@ -1,6 +1,6 @@
 DROP TABLE clients;
-DROP TABLE invoices;
-DROP TABLE items;
+--DROP TABLE invoices;
+--DROP TABLE items;
 
 -- --------------------------------------------
 -- Create the tables (Clients, Invoices, Items)

@@ -1,42 +1,33 @@
 from flask_restful import request, Resource
-    # , reqparse
-import psycopg2
-
+from db import Db
 
 class Invoice(Resource):
-    # parser = reqparse.RequestParser()
-    # parser.add_argument('items')
-    # parser.add_argument("items", location="json")
-    # parser.add_argument("items", type = dict, location="json")
-    # parser.add_argument('gst',
-    #                     type=float,
-    #                     required=True,
-    #                     help="GST cannot be blank!"
-    #                     )
+    def __init__(self):
+        self.db = Db()
 
     def post(self, client_id):
+        # 1. insert new invoice with value zero
         # 2. insert all items, add them up
         # 3. update invoice total & gst values
         # 4. return
+        
+        # get the data passed in the post
+        req_data = request.get_json()
+       
+        # insert an invoice with $0 owing
+        sql = f"INSERT INTO invoices (date, location, client_id, total, gst) values(current_date, 'Calgary', {client_id}, 0, 0) RETURNING id;"
+        result_id = self.db.query(sql)
+        
+        if result_id:
+            print("Invoice {result_id} was created.")
+        else:
+            print("Could not create empty invoice.")
 
-        # 1. insert new invoice with value zero
-        query = "INSERT INTO invoices (date, location, client_id, total, gst) " \
-                "values(current_date, 'Calgary', %s, 0, 0) RETURNING id;"
-        conn = psycopg2.connect('dbname=evolveu')
-        cur = conn.cursor()
-        try:
-            cur.execute(query, (client_id,))
-            print('QUERY', client_id, query)
-            row = cur.fetchone()
-            if row:
-                invoice_id = row[0]
-                invoice =  {'invoice_id': invoice_id}
+        # insert post data into items table
 
-                data = request.get_json()
-
-                # print('DATA', data['items'])
-                #
-                # print('Before for in')
+        return result_id, 201
+        
+        """ 
                 for item in data['items']:
                     query = "INSERT INTO items (name, invoice_id, price, qty, gst) " \
                             "values(%s, %s, %s, %s, %s);"
@@ -53,27 +44,14 @@ class Invoice(Resource):
         except:
             return {"message": "An error ocurred inserting the item."}, 500  # internal server error
 
-        conn.commit()
-        cur.close()
-        conn.close()
-        return invoice, 201  # created
-
+        """
 
 class InvoiceList(Resource):
+    def __init__(self):
+        self.db = Db()
+
     def get(self):
         sql = "SELECT invoices.id, clients.name, invoices.total " \
               "FROM invoices INNER JOIN clients ON invoices.client_id = clients.id;"
-
-        conn = psycopg2.connect('dbname=evolveu')
-        cur = conn.cursor()
-        cur.execute(sql)
-
-        invoices = []
-        rows = cur.fetchall()
-        for row in rows:
-            invoices.append({'id': row[0], 'name': row[1], 'total': row[2]})
-
-        cur.close()
-        conn.close()
-
-        return {'invoices': invoices}
+        result = self.db.query(sql)
+        return result, 200
